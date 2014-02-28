@@ -297,7 +297,7 @@ class SpreadsheetReaderXLSX implements \Iterator, \Countable
         if (!self::$BaseDate)
         {
             self::$BaseDate = new \DateTime;
-            self::$BaseDate -> setTimezone(new DateTimeZone('UTC'));
+            self::$BaseDate -> setTimezone(new \DateTimeZone('UTC'));
             self::$BaseDate -> setDate(1900, 1, 0);
             self::$BaseDate -> setTime(0, 0, 0);
         }
@@ -926,7 +926,7 @@ class SpreadsheetReaderXLSX implements \Iterator, \Countable
             }
             else
             {
-                $this -> Worksheet = new XMLReader;
+                $this -> Worksheet = new \XMLReader;
             }
 
             $this -> Worksheet -> open($this -> WorksheetPath);
