@@ -1,10 +1,14 @@
 <?php
+namespace Kairos\SpreadsheetReader;
+
+require_once 'Lib/excel_reader2.php';
+
 /**
  * Class for parsing XLSX files specifically
  *
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader_XLSX implements Iterator, Countable
+class SpreadsheetReader_XLSX implements \Iterator, \Countable
 {
     const CELL_TYPE_BOOL = 'b';
     const CELL_TYPE_NUMBER = 'n';
@@ -203,7 +207,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
     {
         if (!is_readable($Filepath))
         {
-            throw new Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.')');
+            throw new \Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.')');
         }
 
         $this -> TempDir = isset($Options['TempDir']) && is_writable($Options['TempDir']) ?
@@ -213,18 +217,18 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
         $this -> TempDir = rtrim($this -> TempDir, DIRECTORY_SEPARATOR);
         $this -> TempDir = $this -> TempDir.DIRECTORY_SEPARATOR.uniqid().DIRECTORY_SEPARATOR;
 
-        $Zip = new ZipArchive;
+        $Zip = new \ZipArchive;
         $Status = $Zip -> open($Filepath);
 
         if ($Status !== true)
         {
-            throw new Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.') (Error '.$Status.')');
+            throw new \Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.') (Error '.$Status.')');
         }
 
         // Getting the general workbook information
         if ($Zip -> locateName('xl/workbook.xml') !== false)
         {
-            $this -> WorkbookXML = new SimpleXMLElement($Zip -> getFromName('xl/workbook.xml'));
+            $this -> WorkbookXML = new \SimpleXMLElement($Zip -> getFromName('xl/workbook.xml'));
         }
 
         // Extracting the XMLs from the XLSX zip file
@@ -236,7 +240,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
 
             if (is_readable($this -> SharedStringsPath))
             {
-                $this -> SharedStrings = new XMLReader;
+                $this -> SharedStrings = new \XMLReader;
                 $this -> SharedStrings -> open($this -> SharedStringsPath);
                 $this -> PrepareSharedStringCache();
             }
@@ -258,7 +262,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
         // If worksheet is present and is OK, parse the styles already
         if ($Zip -> locateName('xl/styles.xml') !== false)
         {
-            $this -> StylesXML = new SimpleXMLElement($Zip -> getFromName('xl/styles.xml'));
+            $this -> StylesXML = new \SimpleXMLElement($Zip -> getFromName('xl/styles.xml'));
             if ($this -> StylesXML && $this -> StylesXML -> cellXfs && $this -> StylesXML -> cellXfs -> xf)
             {
                 foreach ($this -> StylesXML -> cellXfs -> xf as $Index => $XF)
@@ -292,7 +296,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
         // Setting base date
         if (!self::$BaseDate)
         {
-            self::$BaseDate = new DateTime;
+            self::$BaseDate = new \DateTime;
             self::$BaseDate -> setTimezone(new DateTimeZone('UTC'));
             self::$BaseDate -> setDate(1900, 1, 0);
             self::$BaseDate -> setTime(0, 0, 0);
@@ -331,14 +335,14 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
             @rmdir($this -> TempDir);
         }
 
-        if ($this -> Worksheet && $this -> Worksheet instanceof XMLReader)
+        if ($this -> Worksheet && $this -> Worksheet instanceof \XMLReader)
         {
             $this -> Worksheet -> close();
             unset($this -> Worksheet);
         }
         unset($this -> WorksheetPath);
 
-        if ($this -> SharedStrings && $this -> SharedStrings instanceof XMLReader)
+        if ($this -> SharedStrings && $this -> SharedStrings instanceof \XMLReader)
         {
             $this -> SharedStrings -> close();
             unset($this -> SharedStrings);
@@ -439,7 +443,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
             switch ($this -> SharedStrings -> name)
             {
                 case 'si':
-                    if ($this -> SharedStrings -> nodeType == XMLReader::END_ELEMENT)
+                    if ($this -> SharedStrings -> nodeType == \XMLReader::END_ELEMENT)
                     {
                         $this -> SharedStringCache[$CacheIndex] = $CacheValue;
                         $CacheIndex++;
@@ -447,7 +451,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                     }
                     break;
                 case 't':
-                    if ($this -> SharedStrings -> nodeType == XMLReader::END_ELEMENT)
+                    if ($this -> SharedStrings -> nodeType == \XMLReader::END_ELEMENT)
                     {
                         continue;
                     }
@@ -537,7 +541,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
 
             if ($this -> SharedStrings -> name == 'si')
             {
-                if ($this -> SharedStrings -> nodeType == XMLReader::END_ELEMENT)
+                if ($this -> SharedStrings -> nodeType == \XMLReader::END_ELEMENT)
                 {
                     $this -> SSOpen = false;
                     $this -> SharedStringIndex++;
@@ -572,14 +576,14 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                 switch ($this -> SharedStrings -> name)
                 {
                     case 't':
-                        if ($this -> SharedStrings -> nodeType == XMLReader::END_ELEMENT)
+                        if ($this -> SharedStrings -> nodeType == \XMLReader::END_ELEMENT)
                         {
                             continue;
                         }
                         $Value .= $this -> SharedStrings -> readString();
                         break;
                     case 'si':
-                        if ($this -> SharedStrings -> nodeType == XMLReader::END_ELEMENT)
+                        if ($this -> SharedStrings -> nodeType == \XMLReader::END_ELEMENT)
                         {
                             $this -> SSOpen = false;
                             $this -> SSForwarded = true;
@@ -813,7 +817,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                 }
 
                 $Value = clone self::$BaseDate;
-                $Value -> add(new DateInterval('P'.$Days.'D'.($Seconds ? 'T'.$Seconds.'S' : '')));
+                $Value -> add(new \DateInterval('P'.$Days.'D'.($Seconds ? 'T'.$Seconds.'S' : '')));
 
                 if (!$this -> Options['ReturnDateTimeObjects'])
                 {
@@ -912,11 +916,11 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
      */
     public function rewind()
     {
-        if ($this -> Index > 0 || !($this -> Worksheet instanceof XMLReader))
+        if ($this -> Index > 0 || !($this -> Worksheet instanceof \XMLReader))
         {
             // If the worksheet was already iterated, XML file is reopened.
             // Otherwise it should be at the beginning anyway
-            if ($this -> Worksheet instanceof XMLReader)
+            if ($this -> Worksheet instanceof \XMLReader)
             {
                 $this -> Worksheet -> close();
             }
@@ -1005,7 +1009,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                 {
                     // End of row
                     case 'row':
-                        if ($this -> Worksheet -> nodeType == XMLReader::END_ELEMENT)
+                        if ($this -> Worksheet -> nodeType == \XMLReader::END_ELEMENT)
                         {
                             $this -> RowOpen = false;
                             break 2;
@@ -1014,7 +1018,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                     // Cell
                     case 'c':
                         // If it is a closing tag, skip it
-                        if ($this -> Worksheet -> nodeType == XMLReader::END_ELEMENT)
+                        if ($this -> Worksheet -> nodeType == \XMLReader::END_ELEMENT)
                         {
                             continue;
                         }
@@ -1047,7 +1051,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable
                         break;
                     // Cell value
                     case 'v':
-                        if ($this -> Worksheet -> nodeType == XMLReader::END_ELEMENT)
+                        if ($this -> Worksheet -> nodeType == \XMLReader::END_ELEMENT)
                         {
                             continue;
                         }

@@ -1,11 +1,15 @@
 <?php
+namespace Kairos\SpreadsheetReader;
+
+require_once 'Lib/excel_reader2.php';
+
 /**
  * Main class for spreadsheet reading
  *
  * @version 0.5.6
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader implements Iterator, Countable
+class SpreadsheetReader implements \Iterator, \Countable
 {
     const TYPE_XLSX = 'XLSX';
     const TYPE_XLS = 'XLS';
@@ -41,7 +45,7 @@ class SpreadsheetReader implements Iterator, Countable
     {
         if (!is_readable($Filepath))
         {
-            throw new Exception('SpreadsheetReader: File ('.$Filepath.') not readable');
+            throw new \Exception('SpreadsheetReader: File ('.$Filepath.') not readable');
         }
 
         // To avoid timezone warnings and exceptions for formatting dates retrieved from files
@@ -204,10 +208,10 @@ class SpreadsheetReader implements Iterator, Countable
             throw new Exception('SpreadsheetReader: Invalid type ('.$Type.')');
         }
 
-        if (!class_exists('SpreadsheetReader_'.$Type))
-        {
-            require(dirname(__FILE__).DIRECTORY_SEPARATOR.'SpreadsheetReader_'.$Type.'.php');
-        }
+        //if (!class_exists('SpreadsheetReader_'.$Type))
+        //{
+            //require(dirname(__FILE__).DIRECTORY_SEPARATOR.'SpreadsheetReader_'.$Type.'.php');
+        //}
     }
 
     // !Iterator interface methods

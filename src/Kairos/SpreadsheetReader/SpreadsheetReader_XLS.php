@@ -1,10 +1,14 @@
 <?php
+namespace Kairos\SpreadsheetReader;
+
+require_once 'Lib/excel_reader2.php';
+
 /**
  * Class for parsing XLS files
  *
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader_XLS implements Iterator, Countable
+class SpreadsheetReader_XLS implements \Iterator, \Countable
 {
     /**
      * @var array Options array, pre-populated with the default values.
@@ -60,15 +64,15 @@ class SpreadsheetReader_XLS implements Iterator, Countable
     {
         if (!is_readable($Filepath))
         {
-            throw new Exception('SpreadsheetReader_XLS: File not readable ('.$Filepath.')');
+            throw new \Exception('SpreadsheetReader_XLS: File not readable ('.$Filepath.')');
         }
 
         if (!class_exists('Spreadsheet_Excel_Reader'))
         {
-            throw new Exception('SpreadsheetReader_XLS: Spreadsheet_Excel_Reader class not available');
+            throw new \Exception('SpreadsheetReader_XLS: Spreadsheet_Excel_Reader class not available');
         }
 
-        $this -> Handle = new Spreadsheet_Excel_Reader($Filepath, false, 'UTF-8');
+        $this -> Handle = new \Spreadsheet_Excel_Reader($Filepath, false, 'UTF-8');
 
         if (function_exists('mb_convert_encoding'))
         {
@@ -183,6 +187,7 @@ class SpreadsheetReader_XLS implements Iterator, Countable
             $this -> next();
         }
 
+        // Add convertion of values
         $currentRowConverted = array();
         foreach($this->CurrentRow as $col) {
             $currentRowConverted[] = mb_convert_encoding($col, 'UTF-8');
