@@ -1,3 +1,7 @@
+Getting Started With Kairos Spreadsheet Reader
+==================================
+
+## Summary
 **spreadsheet-reader** is a PHP spreadsheet reader that differs from others in that the main goal for it was efficient
 data extraction that could handle large (as in really large) files. So far it may not definitely be CPU, time
 or I/O-efficient but at least it won't run out of memory (except maybe for XLS files).
@@ -6,66 +10,74 @@ So far XLSX, ODS and text/CSV file parsing should be memory-efficient. XLS file 
 from http://code.google.com/p/php-excel-reader/ which, sadly, has memory issues with bigger spreadsheets, as it reads the
 data all at once and keeps it all in memory.
 
-### Requirements:
-*  PHP 5.3.0 or newer
+
+## Requirements
+*  Requires PHP 5.3 as namespaces and closures are used. Has no other dependencies and can be used independantly from any framework or whatsoever environment.
 *  PHP must have Zip file support (see http://php.net/manual/en/zip.installation.php)
 
-### Usage:
+## Installation :
+
+**In your composer file file :**
+
+``` js
+    {
+        "require": {
+            "kairos/spreadsheetreader": "dev-master"
+        }
+    }
+```
+
+**Update your composer :**
+
+``` bash
+    php composer.phar update kairos/spreadsheetreader
+```
+
+## How To use :
+
+You now can include the class in your controller
+
+``` php
+    use Kairos\SpreadsheetReader as Reader;
+```
 
 All data is read from the file sequentially, with each row being returned as a numeric array.
 This is about the easiest way to read a file:
 
-	<?php
-		// If you need to parse XLS files, include php-excel-reader
-		require('php-excel-reader/excel_reader2.php');
-	
-		require('SpreadsheetReader.php');
-	
-		$Reader = new SpreadsheetReader('example.xlsx');
-		foreach ($Reader as $Row)
-		{
-			print_r($Row);
-		}
-	?>
+``` php
+    $reader = new Reader\SpreadsheetReader('example.xlsx');
+    foreach ($reader as $row)
+    {
+        print_r($row);
+    }
+```
 
 However, now also multiple sheet reading is supported for file formats where it is possible. (In case of CSV, it is handled as if
 it only has one sheet.)
 
 You can retrieve information about sheets contained in the file by calling the `Sheets()` method which returns an array with
 sheet indexes as keys and sheet names as values. Then you can change the sheet that's currently being read by passing that index
-to the `ChangeSheet($Index)` method.
+to the `ChangeSheet($index)` method.
 
-Example:
+``` php
+		$reader = new Reader\SpreadsheetReader('example.xlsx');
+		$sheets = $reader->Sheets();
 
-	<?php
-		$Reader = new SpreadsheetReader('example.xlsx');
-		$Sheets = $Reader -> Sheets();
-
-		foreach ($Sheets as $Index => $Name)
+		foreach ($sheets as $index => $name)
 		{
-			echo 'Sheet #'.$Index.': '.$Name;
-
-			$Reader -> ChangeSheet($Index);
-
-			foreach ($Reader as $Row)
+			echo 'Sheet #' . $index . ': ' . $name;
+			$reader->ChangeSheet($index);
+			foreach ($reader as $row)
 			{
-				print_r($Row);
+				print_r($row);
 			}
 		}
 	?>
+```
 
 If a sheet is changed to the same that is currently open, the position in the file still reverts to the beginning, so as to conform
 to the same behavior as when changed to a different sheet.
 
-### Testing
-
-From the command line:
-
-	php test.php path-to-spreadsheet.xls
-
-In the browser:
-
-    http://path-to-library/test.php?File=/path/to/spreadsheet.xls
 
 ### Notes about library performance
 *  CSV and text files are read strictly sequentially so performance should be O(n);
@@ -77,8 +89,6 @@ In the browser:
 	To that end, the XLSX parser has a cache for shared strings that is used if the total shared string count is not too high. In case you get out of memory errors, you can
 	try adjusting the *SHARED_STRING_CACHE_LIMIT* constant in SpreadsheetReader_XLSX to a lower one.
 
-### TODOs:
-*  ODS date formats;
 
 ### Licensing
 All of the code in this library is licensed under the MIT license as included in the LICENSE file, however, for now the library
