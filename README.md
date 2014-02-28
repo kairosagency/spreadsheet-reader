@@ -60,19 +60,18 @@ sheet indexes as keys and sheet names as values. Then you can change the sheet t
 to the `ChangeSheet($index)` method.
 
 ``` php
-		$reader = new Reader\SpreadsheetReader('example.xlsx');
-		$sheets = $reader->Sheets();
+    $reader = new Reader\SpreadsheetReader('example.xlsx');
+    $sheets = $reader->Sheets();
 
-		foreach ($sheets as $index => $name)
-		{
-			echo 'Sheet #' . $index . ': ' . $name;
-			$reader->ChangeSheet($index);
-			foreach ($reader as $row)
-			{
-				print_r($row);
-			}
-		}
-	?>
+    foreach ($sheets as $index => $name)
+    {
+        echo 'Sheet #' . $index . ': ' . $name;
+        $reader->ChangeSheet($index);
+        foreach ($reader as $row)
+        {
+            print_r($row);
+        }
+    }
 ```
 
 If a sheet is changed to the same that is currently open, the position in the file still reverts to the beginning, so as to conform
