@@ -1,3 +1,10 @@
+### v.0.6.0  2014-02-28
+
+- Add namespaces for Spreadsheet classes and include basic (excel_reader2.php) into them
+- Rename classes in order to remove "_"
+- Add Macintosh encoding management for CSV
+- Fix convert utf8 problem for XLS files
+
 ### v.0.5.6  2013-09-04
 
 - Fix for formulas being returned along with values in XLSX files. (Thanks to [marktag](https://github.com/marktag))
