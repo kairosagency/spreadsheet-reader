@@ -8,7 +8,7 @@ require_once 'Lib/excel_reader2.php';
  *
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader_XLSX implements \Iterator, \Countable
+class SpreadsheetReaderXLSX implements \Iterator, \Countable
 {
     const CELL_TYPE_BOOL = 'b';
     const CELL_TYPE_NUMBER = 'n';
@@ -38,7 +38,7 @@ class SpreadsheetReader_XLSX implements \Iterator, \Countable
     private $Valid = false;
 
     /**
-     * @var SpreadsheetReader_* Handle for the reader object
+     * @var SpreadsheetReader* Handle for the reader object
      */
     private $Handle = false;
 
@@ -207,7 +207,7 @@ class SpreadsheetReader_XLSX implements \Iterator, \Countable
     {
         if (!is_readable($Filepath))
         {
-            throw new \Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.')');
+            throw new \Exception('SpreadsheetReaderXLSX: File not readable ('.$Filepath.')');
         }
 
         $this -> TempDir = isset($Options['TempDir']) && is_writable($Options['TempDir']) ?
@@ -222,7 +222,7 @@ class SpreadsheetReader_XLSX implements \Iterator, \Countable
 
         if ($Status !== true)
         {
-            throw new \Exception('SpreadsheetReader_XLSX: File not readable ('.$Filepath.') (Error '.$Status.')');
+            throw new \Exception('SpreadsheetReaderXLSX: File not readable ('.$Filepath.') (Error '.$Status.')');
         }
 
         // Getting the general workbook information

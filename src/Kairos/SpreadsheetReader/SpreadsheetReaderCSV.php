@@ -8,7 +8,7 @@ require_once 'Lib/excel_reader2.php';
  *
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader_CSV implements \Iterator, \Countable
+class SpreadsheetReaderCSV implements \Iterator, \Countable
 {
     /**
      * @var array Options array, pre-populated with the default values.
@@ -48,7 +48,7 @@ class SpreadsheetReader_CSV implements \Iterator, \Countable
 
         if (!is_readable($Filepath))
         {
-            throw new \Exception('SpreadsheetReader_CSV: File not readable ('.$Filepath.')');
+            throw new \Exception('SpreadsheetReaderCSV: File not readable ('.$Filepath.')');
         }
 
         // For safety's sake

@@ -7,7 +7,7 @@ require_once 'Lib/excel_reader2.php';
  *
  * @author Martins Pilsetnieks
  */
-class SpreadsheetReader_ODS implements \Iterator, \Countable
+class SpreadsheetReaderODS implements \Iterator, \Countable
 {
     private $Options = array(
         'TempDir' => '',
@@ -48,7 +48,7 @@ class SpreadsheetReader_ODS implements \Iterator, \Countable
     {
         if (!is_readable($Filepath))
         {
-            throw new \Exception('SpreadsheetReader_ODS: File not readable ('.$Filepath.')');
+            throw new \Exception('SpreadsheetReaderODS: File not readable ('.$Filepath.')');
         }
 
         $this -> TempDir = isset($Options['TempDir']) && is_writable($Options['TempDir']) ?
@@ -63,7 +63,7 @@ class SpreadsheetReader_ODS implements \Iterator, \Countable
 
         if ($Status !== true)
         {
-            throw new Exception('SpreadsheetReader_ODS: File not readable ('.$Filepath.') (Error '.$Status.')');
+            throw new Exception('SpreadsheetReaderODS: File not readable ('.$Filepath.') (Error '.$Status.')');
         }
 
         if ($Zip -> locateName('content.xml') !== false)

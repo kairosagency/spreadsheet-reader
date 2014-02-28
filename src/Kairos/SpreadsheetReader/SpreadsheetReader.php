@@ -27,7 +27,7 @@ class SpreadsheetReader implements \Iterator, \Countable
     private $Index = 0;
 
     /**
-     * @var SpreadsheetReader_* Handle for the reader object
+     * @var SpreadsheetReader* Handle for the reader object
      */
     private $Handle = array();
 
@@ -133,7 +133,7 @@ class SpreadsheetReader implements \Iterator, \Countable
         if ($this -> Type == self::TYPE_XLS)
         {
             self::Load(self::TYPE_XLS);
-            $this -> Handle = new SpreadsheetReader_XLS($Filepath);
+            $this -> Handle = new SpreadsheetReaderXLS($Filepath);
             if ($this -> Handle -> Error)
             {
                 $this -> Handle -> __destruct();
@@ -155,18 +155,18 @@ class SpreadsheetReader implements \Iterator, \Countable
         {
             case self::TYPE_XLSX:
                 self::Load(self::TYPE_XLSX);
-                $this -> Handle = new SpreadsheetReader_XLSX($Filepath);
+                $this -> Handle = new SpreadsheetReaderXLSX($Filepath);
                 break;
             case self::TYPE_CSV:
                 self::Load(self::TYPE_CSV);
-                $this -> Handle = new SpreadsheetReader_CSV($Filepath, $this -> Options);
+                $this -> Handle = new SpreadsheetReaderCSV($Filepath, $this -> Options);
                 break;
             case self::TYPE_XLS:
                 // Everything already happens above
                 break;
             case self::TYPE_ODS:
                 self::Load(self::TYPE_ODS);
-                $this -> Handle = new SpreadsheetReader_ODS($Filepath, $this -> Options);
+                $this -> Handle = new SpreadsheetReaderODS($Filepath, $this -> Options);
                 break;
         }
     }
@@ -205,12 +205,12 @@ class SpreadsheetReader implements \Iterator, \Countable
     {
         if (!in_array($Type, array(self::TYPE_XLSX, self::TYPE_XLS, self::TYPE_CSV, self::TYPE_ODS)))
         {
-            throw new Exception('SpreadsheetReader: Invalid type ('.$Type.')');
+            throw new \Exception('SpreadsheetReader: Invalid type ('.$Type.')');
         }
 
-        //if (!class_exists('SpreadsheetReader_'.$Type))
+        //if (!class_exists('SpreadsheetReader'.$Type))
         //{
-            //require(dirname(__FILE__).DIRECTORY_SEPARATOR.'SpreadsheetReader_'.$Type.'.php');
+            //require(dirname(__FILE__).DIRECTORY_SEPARATOR.'SpreadsheetReader'.$Type.'.php');
         //}
     }
 
