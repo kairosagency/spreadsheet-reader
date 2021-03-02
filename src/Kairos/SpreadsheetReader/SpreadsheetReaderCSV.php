@@ -58,7 +58,7 @@ class SpreadsheetReaderCSV implements \Iterator, \Countable
         $this -> Handle = fopen($Filepath, 'r');
 
         // Checking if file is ISO-8859-1
-        if (mb_check_encoding(fgets($this->Handle), 'ISO-8859-1')) {
+        if (mb_check_encoding(fgets($this->Handle), 'ISO-8859-1') && mb_check_encoding(fgets($this->Handle), 'ASCII')) {
             $this->isISOFile = true;
         }
         fseek($this -> Handle, 0);
